@@ -88,7 +88,8 @@ class ShellApp:
         self.root.title("ITS Tools 🕺🪩")
         self.root.configure(bg="#2B2D30")
 
-        icon = PhotoImage(file="./src/img/ico.png")
+        icon_path = resource_path("img/ico.png")
+        icon = PhotoImage(file=icon_path)
         root.iconphoto(True, icon)
 
         self.style = ttk.Style()
@@ -131,8 +132,7 @@ class ShellApp:
             ("CHK", "CHKDSK /F /R" if subprocess.os.name == "nt" else "fsck -f"),
             ("SFC", "sfc /scannow"),
             ("DISM", "DISM /Online /Cleanup-Image /RestoreHealth"),
-            ("Change Wallpaper",
-             lambda: change_wallpaper(os.path.abspath("C:/Users/Theo/PycharmProjects/ITSTools/src/img/wallpaper.jpg"))),
+            ("Change Wallpaper", lambda: change_wallpaper(resource_path("img/wallpaper.jpg"))),
             ("(Acronis)", "whoami"),
             ("SFC", "whoami"),
             ("[HORUS]", "whoami"),
@@ -208,6 +208,13 @@ def change_wallpaper(image_path):
         return False
 
 
+def resource_path(relative_path):
+    if hasattr(sys, '_MEIPASS'):
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 def set_dpi_aware():
     ctypes.windll.shcore.SetProcessDpiAwareness(1)

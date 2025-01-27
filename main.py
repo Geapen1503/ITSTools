@@ -81,17 +81,18 @@ class ShellApp:
             ("CHK", "CHKDSK /F /R" if subprocess.os.name == "nt" else "fsck -f"),
             ("SFC", "sfc /scannow"),
             ("DISM", "DISM /Online /Cleanup-Image /RestoreHealth"),
-            ("Change Wallpaper", lambda: change_wallpaper(resource_path("img/wallpaper.jpg"))),
+            ("Change Wallpaper", f"Set-ExecutionPolicy Bypass -Scope Process -Force; $path = \"{resource_path('ITSYSTEMS')}\"; If(!(Test-Path $path)) {{ md \"$path\" }}; Set-Location $path; Invoke-WebRequest -Uri \"https://www.itsystems.fr/wp-content/uploads/2024/04/fond-ecran-its.jpg\" -OutFile \"fond-ecran-its.png\"; $imgPath = \"$path\\\\fond-ecran-its.png\"; $code=@\"using System.Runtime.InteropServices; namespace Win32{{ public class Wallpaper{{ [DllImport('user32.dll', CharSet=CharSet.Auto)] static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni); public static void SetWallpaper(string thePath){{ SystemParametersInfo(20,0,thePath,3); }} }} }}\"@; Add-Type $code; [Win32.Wallpaper]::SetWallpaper($imgPath);"),
             ("(Acronis)", "whoami"),
-            ("SFC", "whoami"),
             ("[HORUS]", "whoami"),
-            ("IPCONFIG", "ipconfig /all" if subprocess.os.name == "nt" else "ifconfig -a"),
-            ("PRIVATE NETWORK", "Get-NetConnectionProfile | Set-NetConnectionProfile -NetworkCategory Private"),
-            ("Opti Interface", "whoami"),
             ("Déploiement Atera", "whoami"),
-            ("Pare-feu Brother", "whoami"),
+            ("Disable IPV6", "Set-ExecutionPolicy Bypass -Scope Process -Force; $nic = Get-NetAdapter; Disable-NetAdapterBinding -Name $nic.Name -ComponentID ms_tcpip6;"),
+            ("Disable UAC", "saps -WindowStyle Hidden -FilePath powershell -Verb runas -ArgumentList {{ Set-ItemProperty -Path \"HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\" -Name \"ConsentPromptBehaviorAdmin\" -Type DWord -Value 0; Set-ItemProperty -Path \"HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\" -Name \"PromptOnSecureDesktop\" -Type DWord -Value 0; Set-ItemProperty -Path \"HKLM:\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\" -Name \"EnableLUA\" -PropertyType DWord -Value 1; Set-ItemProperty -Path \"HKLM:\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System\" -Name \"ConsentPromptBehaviorUser\" -PropertyType DWord -Value 0 }} -wait"),
+            ("IPCONFIG", "ipconfig /all" if subprocess.os.name == "nt" else "ifconfig -a"),
+            ("PRIVATE NETWORK", "Set-ExecutionPolicy Bypass -Scope Process -Force; set-netconnectionprofile -networkcategory private; if ($?) {{ Write-Host \"Network is now set to Private\" }} else {{ Write-Host \"Failed to set network to Private\" }}; Exit;"),
+            ("Opti Interface", "Set-ExecutionPolicy Bypass -Scope Process -Force; New-Item -Path \"HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\" -Name Ribbon; New-Item -Path \"HKCU:\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\" -Name Ribbon; New-ItemProperty -Path \"HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\Ribbon\" -Name \"MinimizedStateTabletModeOff\" -Value \"00000000\" -PropertyType \"DWord\"; New-ItemProperty -Path \"HKCU:\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\Ribbon\" -Name \"MinimizedStateTabletModeOff\" -Value \"00000000\" -PropertyType \"DWord\"; Set-ItemProperty -Path \"HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\HideDesktopIcons\\\\NewStartPanel\" -Name \"{{20D04FE0-3AEA-1069-A2D8-08002B30309D}}\" -Value \"00000000\"; Set-ItemProperty -Path \"HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\HideDesktopIcons\\\\ClassicStartMenu\" -Name \"{{20D04FE0-3AEA-1069-A2D8-08002B30309D}}\" -Value \"00000000\"; Set-ItemProperty -Path \"HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\HideDesktopIcons\\\\NewStartPanel\" -Name \"{{59031a47-3f72-44a7-89c5-5595fe6b30ee}}\" -Value \"00000000\"; Set-ItemProperty -Path \"HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\HideDesktopIcons\\\\ClassicStartMenu\" -Name \"{{59031a47-3f72-44a7-89c5-5595fe6b30ee}}\" -Value \"00000000\"; Set-ItemProperty -Path \"HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\" -Name \"EnableAutoTray\" -Value \"00000000\"; Set-ItemProperty -Path \"HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\Advanced\" -Name \"HideFileExt\" -Value \"00000000\";"),
+            ("Pare-feu Brother", "Set-ExecutionPolicy Bypass -Scope Process -Force; New-NetFirewallRule -DisplayName \"scan brother Port\" -Direction inbound -Profile Any -Action Allow -LocalPort 54925,137,161 -Protocol UDP;")
         ]
-        cols = 6
+        cols = 7
         for index, (label, command) in enumerate(commands):
             row = index // cols
             col = index % cols

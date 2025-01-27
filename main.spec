@@ -5,7 +5,10 @@ a = Analysis(
     ['main.py'],
     pathex=['/Users/Theo/PycharmProjects/ITSTools'],
     binaries=[],
-    datas=[('img/*', 'img')],
+    datas=[
+        ('img/*', 'img'),
+        ('ITSYSTEMS/', 'ITSYSTEMS')
+    ],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

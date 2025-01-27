@@ -7,6 +7,7 @@ import subprocess
 import os
 import ctypes
 import threading
+from dotenv import load_dotenv
 
 
 """
@@ -67,6 +68,9 @@ import threading
          **********************************************************************************         
                                                                                                 """
 
+load_dotenv()
+
+APP_PASSWORD = os.getenv("APP_PASSWORD")
 
 class PasswordPrompt:
     def __init__(self, root, callback):
@@ -97,7 +101,7 @@ class PasswordPrompt:
 
     def check_password(self):
         password = self.password_entry.get()
-        if password == "root":
+        if password == APP_PASSWORD:
             self.root.destroy()
             self.callback()
         else:

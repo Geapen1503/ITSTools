@@ -1,9 +1,11 @@
 # -*- mode: python ; coding: utf-8 -*-
+
+
 a = Analysis(
     ['main.py'],
-    pathex=['/Users/Theo/PycharmProjects/ITSTools'],
+    pathex=[],
     binaries=[],
-    datas=[('img/*', 'img'), ('ITSYSTEMS/', 'ITSYSTEMS')],
+    datas=[],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -13,6 +15,7 @@ a = Analysis(
     optimize=0,
 )
 pyz = PYZ(a.pure)
+
 exe = EXE(
     pyz,
     a.scripts,
@@ -32,4 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon=['img\\ico.ico'],
 )

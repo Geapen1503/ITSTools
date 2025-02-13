@@ -9,3 +9,7 @@ Modifying the app :
 
 - it's a small python app, only one file (main.py), so if you want to modify/add anything, just read the code
 
+secure build command : pyinstaller --onefile --noconsole --icon=./img/ico.ico --clean main.py 
+
+signing exe command :
+SignTool sign /f "C:\Users\Theo\Desktop\certs\certs\bill01.pfx" /p "orange" /fd SHA256 /t "http://timestamp.comodoca.com/authenticode" "C:\Users\Theo\PycharmProjects\ITSTools\dist\main.exe"

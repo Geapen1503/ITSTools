@@ -8,6 +8,8 @@ How to build :
 Modifying the app :
 
 - it's a small python app, only one file (main.py), so if you want to modify/add anything, just read the code
+- if you only want to add commands add them to the commands list in the ShellApp class, respect the typo, like this:
+  ("command name", "your powershell command")
 
 secure build command : pyinstaller --onefile --noconsole --icon=./img/ico.ico --clean main.py 
 
